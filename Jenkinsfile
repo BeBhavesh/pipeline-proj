@@ -15,11 +15,16 @@ pipeline {
             }
         }
 
+        
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t your-image-name:${env.BUILD_NUMBER} .'
-            }
-        }
+                sh '''
+      #!/bin/bash
+      docker build -t my-app-image .
+    '''
+  }
+}
+
 
         stage('Push Docker Image') {
             steps {
