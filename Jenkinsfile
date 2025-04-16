@@ -16,33 +16,34 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                // Build Docker image with Bash
-                sh '''
-                    #!/bin/bash
-                    docker build -t my-app-image:latest .
-                '''
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                // Use stored DockerHub password and push the image
-                withCredentials([
-  string(credentialsId: 'dockerhub-username', variable: 'DOCKER_HUB_USERNAME'),
-  string(credentialsId: 'dockerhub-password', variable: 'DOCKER_HUB_PASSWORD')
-]) {
-  sh '''
-  #!/bin/bash
-    echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
-    docker push my-app-image
-  '''
+     stage('Build Docker Image') {
+  steps {
+    withCredentials([
+      string(credentialsId: 'dockerhub-username', variable: 'DOCKER_HUB_USERNAME')
+    ]) {
+      sh '''
+        #!/bin/bash
+        docker build -t $DOCKER_HUB_USERNAME/my-app-image:latest .
+      '''
+    }
+  }
 }
 
-            }
-        }
+stage('Push Docker Image') {
+  steps {
+    withCredentials([
+      string(credentialsId: 'dockerhub-username', variable: 'DOCKER_HUB_USERNAME'),
+      string(credentialsId: 'dockerhub-password', variable: 'DOCKER_HUB_PASSWORD')
+    ]) {
+      sh '''
+        #!/bin/bash
+        echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+        docker push $DOCKER_HUB_USERNAME/my-app-image
+      '''
     }
+  }
+}
+
 
     post {
         success {
