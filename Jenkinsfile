@@ -26,21 +26,18 @@ pipeline {
 }
 
 
-        stage('Push Docker Image') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    sh '''
-                      echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                      docker push your-image-name:${env.BUILD_NUMBER}
-                    '''
-                }
-            }
-        }
+      stage('Push Docker Image') {
+  steps {
+    withCredentials([string(credentialsId: 'dockerhub-password', variable: 'DOCKER_HUB_PASSWORD')]) {
+      sh '''
+        #!/bin/bash
+        echo "$DOCKER_HUB_PASSWORD" | docker login -u bebhavi08 --password-stdin
+        docker push my-app-image
+      '''
     }
+  }
+}
+
 
     post {
         success {
