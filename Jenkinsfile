@@ -29,14 +29,17 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 // Use stored DockerHub password and push the image
-                withCredentials([string(credentialsId: 'dockerhub-password', variable: 'DOCKER_HUB_PASSWORD')]) {
-                    sh '''
-                        #!/bin/bash
-                        echo "$DOCKER_HUB_PASSWORD" | docker login -u bebhavi08 --password-stdin
-                        docker push my-app-image:latest
-                        docker logout
-                    '''
-                }
+                withCredentials([
+  string(credentialsId: 'dockerhub-username', variable: 'DOCKER_HUB_USERNAME'),
+  string(credentialsId: 'dockerhub-password', variable: 'DOCKER_HUB_PASSWORD')
+]) {
+  sh '''
+  #!/bin/bash
+    echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+    docker push my-app-image
+  '''
+}
+
             }
         }
     }
