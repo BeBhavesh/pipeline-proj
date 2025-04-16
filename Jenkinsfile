@@ -19,7 +19,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'bebhavi08', variable: 'DOCKER_HUB_USERNAME')
+                    string(credentialsId: 'dockerhub-username', variable: 'DOCKER_HUB_USERNAME')
                 ]) {
                     sh '''
                         #!/bin/bash
@@ -32,8 +32,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'bebhavi08', variable: 'DOCKER_HUB_USERNAME'),
-                    string(credentialsId: '#bhavi555', variable: 'DOCKER_HUB_PASSWORD')
+                    string(credentialsId: 'dockerhub-username', variable: 'DOCKER_HUB_USERNAME'),
+                    string(credentialsId: 'dockerhub-password', variable: 'DOCKER_HUB_PASSWORD')
                 ]) {
                     sh '''
                         #!/bin/bash
